@@ -10,5 +10,5 @@ Type `npm start` to compile & run. The server will startup at localhost:3000 & a
 Marc Feliu @onepopcorn http://onepopcorn.com 
 
 ## LICENSE
-This project is licensed under MIT License. See [LICENSE.TXT](./LICENSE.TXT) for more details
+This project is licensed under MIT License. See [LICENSE](./LICENSE) for more details
 
