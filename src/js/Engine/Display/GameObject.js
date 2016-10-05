@@ -1,10 +1,9 @@
-/*
+import { Mesh } from 'three'
+/**
  * Abstract class that works as a "template" for all in-game objects like Players, NPC's, etc.
  * For lights and other stuff use GameScene directly
+ * @extends {THREE.MESH}
  */
-
-import { Mesh } from 'three'
-
 export default class GameObject extends Mesh {
 	constructor(...args) {
 		super(args)

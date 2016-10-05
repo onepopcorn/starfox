@@ -14,7 +14,8 @@ const gulp         = require('gulp'),
       notifier     = require('node-notifier'),
       rename       = require('gulp-rename'),
       sourcemaps   = require('gulp-sourcemaps'),
-      source       = require('vinyl-source-stream');
+      source       = require('vinyl-source-stream'),
+      esdoc        = require('gulp-esdoc');
 
 
 var config = {
@@ -35,9 +36,13 @@ var config = {
     outputDir:"bin"
   },
   assets: {
-    src:["src/assets/**/*.{png,gif,jpg,webp,svg,otf,ttf,eot,woff,woff2,ico,json}"],
-    watch:["src/assets/**/*.{png,gif,jpg,webp,svg,otf,ttf,eot,woff,woff2,ico,json}"],
+    src:["src/assets/**/*.{png,gif,jpg,webp,svg,otf,ttf,eot,woff,woff2,ico,json,js}"],
+    watch:["src/assets/**/*.{png,gif,jpg,webp,svg,otf,ttf,eot,woff,woff2,ico,json,js}"],
     outputDir:"bin/assets"
+  },
+  docs: {
+    src: 'src/js/Engine/',
+    outputDir:"docs/"
   }
 }
 
@@ -66,7 +71,7 @@ function bundle(bundler){
   bundler
     .bundle()
     .on('error', errorReport)
-    .pipe(source('main.jsx'))
+    .pipe(source(config.js.src))
     .pipe(buffer())
     .pipe(rename(config.js.outputFile))
     .pipe(sourcemaps.init({loadMaps:true}))
@@ -109,6 +114,11 @@ gulp.task('styles', () => {
            .pipe(gulp.dest(config.css.outputDir))
            .on('end', () => server.reload('style.css'));
 }); 
+
+gulp.task('docs', () => {
+  return gulp.src(config.docs.src)
+         .pipe(esdoc({destination:config.docs.outputDir}));
+})
 
 gulp.task('watch', () => {
     gulp.watch(config.css.watch,['styles']);

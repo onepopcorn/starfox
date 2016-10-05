@@ -1,5 +1,4 @@
-
-export default class SoundManager() {
+export default class SoundManager {
 	constructor() {
 		
 	}

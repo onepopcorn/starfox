@@ -5,21 +5,7 @@
 
  import Keyboard from './Keyboard'
  import Gamepad from './Gamepad'
-
- const INPUT_TYPE = {
- 	KEYBOARD: 'KEYBOARD',
- 	GAMEPAD: 'GAMEPAD',
- 	HEADSET: 'HEADSET'
- }
-
- const INPUT_ACTION = {
- 	UP:'ArrowUp',
- 	DOWN: 'ArrowDown',
- 	LEFT: 'ArrowLeft',
- 	RIGHT: 'ArrowRight',
- 	SHOT: ' '
- }
-export { INPUT_TYPE, INPUT_ACTION }
+ import {INPUT_TYPE, INPUT_ACTION} from './Constants'
 
 export default class Controls {
 	constructor(inputType) {

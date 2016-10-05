@@ -2,4 +2,4 @@ require('babel-polyfill')
 import GameEngine from './engine/GameEngine'
 import GameScene from './scenes/GameScene'
 
-const game = new GameEngine('#container',GameScene,{fov:35});
+const game = new GameEngine('#container',GameScene);
