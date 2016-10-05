@@ -10,7 +10,6 @@ export default class Ground extends GameObject {
 		this.material.needsUpdate = true;
 
 		this.position.y = -3;
-		// this.rotation.x = 10;
 	}
 
 	update(){

@@ -37,7 +37,7 @@ export default class GameScene extends BaseScene {
 		this.add(ship);
 	}
 
-	update(){
-		super.update()
+	update(delta,elapsed){
+		super.update(delta,elapsed)
 	}
 }

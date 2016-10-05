@@ -1,6 +1,6 @@
 /**
  * Main class. Wraps the whole game and kickstarts all necessary stuff.
- * @example const game = new GameEngine('#container',MainScene,{fov:75,antialias:false}); 
+ * @example const game = new GameEngine('#container',MainScene,{fov:75,antialias:false}) 
  *
  * @todo Game engine must implement a "director" class to handle scenes 
  * @todo Game engine must handle postprocessing effects and give access to change effects on runtime
@@ -8,7 +8,7 @@
  * @todo Game engine should implement an assets preloader per scene
  */
 
-import { PerspectiveCamera, WebGLRenderer } from 'three' 
+import { PerspectiveCamera, WebGLRenderer, Clock } from 'three' 
 import { BaseScene, DefaultScene, SceneManager } from './Scene'
 import Controls from './Controls/Controls'
 import raf from 'raf'
@@ -38,22 +38,22 @@ export default class GameEngine {
 			this.settings.aspect,
 			this.settings.near,
 			this.settings.far
-		);
-		this.camera.position.z = 5;
+		)
+		this.camera.position.z = 5
 
 		// Config renderer
-		this.renderer = new WebGLRenderer({antialias:this.settings.antialiasing,shadowMapEnabled:this.settings.shadowMap});
-		this.renderer.setSize(window.innerWidth,window.innerHeight);
-		document.querySelector(targetID).appendChild(this.renderer.domElement);
+		this.renderer = new WebGLRenderer({antialias:this.settings.antialiasing,shadowMapEnabled:this.settings.shadowMap})
+		this.renderer.setSize(window.innerWidth,window.innerHeight)
+		document.querySelector(targetID).appendChild(this.renderer.domElement)
 
 		// Handle input
-		this.controls = new Controls();
-		this.controls.init();
+		this.controls = new Controls()
+		this.controls.init()
 
 		// Setup scene. 
 		// Ensure scene is BaseScene subclass
 		if(!initialScene instanceof BaseScene){
-			throw(new Error('An initial scene must be provided'));
+			throw(new Error('An initial scene must be provided'))
 		}
 		// Start with a default preload Scene
 		this.currentScene = new DefaultScene()
@@ -62,33 +62,37 @@ export default class GameEngine {
 
 		// this.currentScene = new initialScene({
 		// 	controls:this.controls
-		// });
-		// this.currentScene.preload(this.currentScene.init);
+		// })
+		// this.currentScene.preload(this.currentScene.init)
 
 		// Handle resize
 		window.onresize = this.onresize.bind(this)
 
 		// Startup the engine
-		this.render = this.render.bind(this);
-		raf(this.render);
+		this.render = this.render.bind(this)
+		this.clock = new Clock()
+		raf(this.render)
 	}
 
 	// changeScene(newScene){
-	// 	this.currentScene = newScene;
+	// 	this.currentScene = newScene
 	// }
 
 	render(delta){
+		const d = this.clock.getDelta()
+		const e = this.clock.getElapsedTime()
+
 		if(this.currentScene){
-			this.currentScene.update();
+			this.currentScene.update(d,e)
 		}
 
-		this.renderer.render(this.currentScene,this.camera);
-		raf(this.render);
+		this.renderer.render(this.currentScene,this.camera)
+		raf(this.render)
 	}
 
 	onresize(){
-		this.camera.aspect = this.settings.aspect = window.innerWidth/window.innerHeight;
-		this.camera.updateProjectionMatrix();
-		this.renderer.setSize(window.innerWidth,window.innerHeight);
+		this.camera.aspect = this.settings.aspect = window.innerWidth/window.innerHeight
+		this.camera.updateProjectionMatrix()
+		this.renderer.setSize(window.innerWidth,window.innerHeight)
 	}
 }

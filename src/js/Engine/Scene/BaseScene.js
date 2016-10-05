@@ -33,10 +33,10 @@ export default class BaseScene extends Scene {
 	 * This method can be implemented by inherited classes. But always call super.update() on the overriding method.
 	 * @public
 	 */
-	update(){
+	update(delta,elapsed){
 		this.children.forEach(child => {
 			if(child instanceof GameObject){
-				child.update()	
+				child.update(delta,elapsed)	
 			}
 		})
 	}
