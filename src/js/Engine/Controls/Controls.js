@@ -9,40 +9,42 @@
 
 export default class Controls {
 	constructor(inputType) {
-		this.inputType = inputType || INPUT_TYPE.KEYBOARD;
+		this.inputType = inputType || INPUT_TYPE.KEYBOARD
 		this.controller = null;
-		this.actions = {};
-		this.init = this.init.bind(this);
+		this.actions = {anyPressed:false}
+		this.init = this.init.bind(this)
 	}
 
 	init(){
 		switch(this.inputType) {
 			case this.inputType.GAMEPAD:
-				this.controller = new Gamepad(this.actions);
-				break;
+				this.controller = new Gamepad(this.actions)
+				break
 			default:
-				this.controller = new Keyboard(this.actions);
+				this.controller = new Keyboard(this.actions)
 		}
 
-		this.mapActions();
-		this.resume();
+		this.mapActions()
+		this.resume()
 	}
 
 	mapActions() {
-		Object.keys(INPUT_ACTION).map(key => this.actions[key] = false)
+		Object.keys(INPUT_ACTION).map(
+			key => this.actions[key] = false
+		)
 	}
 
 	config(action,key){
-		INPUT_ACTION[action] = key;
+		INPUT_ACTION[action] = key
 
 	}
 
 	resume() {
-		this.controller.init();
+		this.controller.init()
 	}
 
 	stop() {
-		/* Disabled all listeners and input interaction. Usage example: cutscene  */
-		this.controller.stop();
+		/* Disabled all listeners and input interaction (e.g. cutscene or non interactive scene)  */
+		this.controller.stop()
 	}
 }

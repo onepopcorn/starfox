@@ -22,6 +22,8 @@
  				this.actions[key] = true
  			}
  		})
+
+ 		this.anyPressedCheck()
  	}
 
  	onkeyup(evt){
@@ -31,6 +33,15 @@
  				this.actions[key] = false
  			}
  		})
+ 		this.anyPressedCheck()
+ 	}
+
+ 	anyPressedCheck(){
+ 		const anyPressed = Object.keys(this.actions).filter(action =>{
+ 			return action !== 'anyPressed' && this.actions[action] === true
+ 		})
+
+ 		this.actions.anyPressed = anyPressed.length > 0
  	}
 
  	stop() {
