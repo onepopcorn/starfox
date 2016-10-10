@@ -1,5 +1,6 @@
 import GameObject from '../Engine/Display/GameObject'
 import { MultiMaterial, Matrix4, Vector3 } from 'three'
+import Tween from '../Engine/Ease/Tween'
 
 export default class Ship extends GameObject {
 	constructor([geometry,materials],controls){
@@ -8,38 +9,50 @@ export default class Ship extends GameObject {
 		this.geometry = geometry
 		this.material = new MultiMaterial(materials)
 		this.controls = controls
-		this.vel = 0.02
-		// Flip Y rotation to face front when lookAt is applied 
+		this.vel = 0.03
+		// Flip Y & Z mesh points to face front & up when lookAt is applied 
 		this.geometry.applyMatrix(new Matrix4().makeRotationY(Math.PI))
+		this.geometry.applyMatrix(new Matrix4().makeRotationZ(Math.PI))
+		
 		this.position.z = 2.5
 
+		this.isAnimated = false
+
+
+		const animationConf = {
+			duration:1,
+			pingpong:true,
+			loop:true,
+			loopCount:2,
+			ease:'EaseOutQuad',
+			onStart: () => this.isAnimated = true,
+			onUpdate: position => this.position.z = position.z,
+			onFinish: () => this.isAnimated = false
+		}
+		this.brake = new Tween({z:this.position.z}, {z:3.5}, animationConf)
+		this.boost = new Tween({z:this.position.z}, {z:-2}, animationConf)
+		
+		this.wiggle = new Tween({z:-2}, {z:2}, {
+			duration:0.75,
+			autoStart: true,
+			loop:true,
+			pingpong:true, 
+			ease:'EaseInOutQuad',
+			onUpdate: rotation => this.rotation.z = rotation.z * Math.PI / 180
+		})
 	}
 
 	update(delta,elapsed){
-		if(this.controls.UP){
-			this.position.y -= this.vel
+		this.wiggle.update()
+		this.brake.update()
+		this.boost.update()
+
+		if(this.controls.TRIGGER_L && !this.isAnimated) {
+			this.brake.start()
 		}
 
-		if(this.controls.DOWN) {
-			this.position.y += this.vel
+		if(this.controls.TRIGGER_R && !this.isAnimated) {
+			this.boost.start()
 		}
-
-		if(this.controls.LEFT) {
-			this.position.x -= this.vel
-		}
-
-		if(this.controls.RIGHT) {
-			this.position.x += this.vel
-		}
-
-		if(this.controls.TRIGGER_L) {
-			this.rotation.z = 90 * Math.PI / 180
-		}
-
-		if(this.controls.TRIGGER_R) {
-			this.rotation.z = -90 * Math.PI / 180
-		}
-
-		// console.log(this.controls)
 	}
 }

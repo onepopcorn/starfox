@@ -13,7 +13,6 @@ export default class GameScene extends BaseScene {
 		this.assets = {}
 		this.controls = engine.controls
 		this.fog = new FogExp2()
-
 	}
 
 	preload() {
@@ -43,6 +42,8 @@ export default class GameScene extends BaseScene {
 
 	update(delta,elapsed){
 		this.ship.lookAt(this.reticle.position)
+		
+		// console.log(this.reticle.position.angleTo(this.ship.position) - Math.PI) // It returns PI because ship geometrys is flipped I guess...
 		super.update(delta,elapsed)
 	}
 }
