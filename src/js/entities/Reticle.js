@@ -1,15 +1,18 @@
-import { PlaneGeometry, MeshBasicMaterial } from 'three'
+import { PlaneGeometry, MeshBasicMaterial, Mesh } from 'three'
 import GameObject from '../Engine/Display/GameObject'
 
 export default class Reticle extends GameObject {
 	constructor(controls){
 		super()
 
-		this.geometry = new PlaneGeometry(1.5,1.5)
-		this.material = new MeshBasicMaterial({color:0xffffff,wireframe:true})
+		let geometry = new PlaneGeometry(0.75,0.75)
+		let material = new MeshBasicMaterial({color:0xffffff,wireframe:true})
+		let mesh = new Mesh(geometry,material)
+		this.add(mesh)
+
 		this.controls = controls
-		this.position.z = -3
-		this.vel = 0.15
+		this.position.z = -2
+		this.vel = 0.1
 	}
 
 	update(delta,elapsed){
@@ -28,8 +31,5 @@ export default class Reticle extends GameObject {
 		if(this.controls.RIGHT) {
 			this.position.x += this.vel
 		}
-
-
-		// this.rotation.z += 0.05
 	}
 }

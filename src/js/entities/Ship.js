@@ -1,58 +1,43 @@
 import GameObject from '../Engine/Display/GameObject'
-import { MultiMaterial, Matrix4, Vector3 } from 'three'
+import { MultiMaterial, Matrix4, Vector3, Mesh } from 'three'
 import Tween from '../Engine/Ease/Tween'
 
 export default class Ship extends GameObject {
-	constructor([geometry,materials],controls){
+	constructor([geometry,materials],targetPosition,controls){
 		super();
 		// Assign properties
-		this.geometry = geometry
-		this.material = new MultiMaterial(materials)
 		this.controls = controls
-		this.vel = 0.03
-		// Flip Y & Z mesh points to face front & up when lookAt is applied 
-		this.geometry.applyMatrix(new Matrix4().makeRotationY(Math.PI))
-		this.geometry.applyMatrix(new Matrix4().makeRotationZ(Math.PI))
+		this.target = targetPosition
+		this.mesh = new Mesh(geometry,new MultiMaterial(materials))
+		this.add(this.mesh)
 		
-		this.position.z = 2.5
-
+		// // Flip Y & Z mesh points to face front & up when lookAt is applied 
+		this.mesh.geometry.applyMatrix(new Matrix4().makeRotationY(Math.PI))
+		this.position.z = 1.5
 		this.isAnimated = false
-
-
-		const animationConf = {
-			duration:1,
-			pingpong:true,
-			loop:true,
-			loopCount:2,
-			ease:'EaseOutQuad',
-			onStart: () => this.isAnimated = true,
-			onUpdate: position => this.position.z = position.z,
-			onFinish: () => this.isAnimated = false
-		}
-		this.brake = new Tween({z:this.position.z}, {z:3.5}, animationConf)
-		this.boost = new Tween({z:this.position.z}, {z:-2}, animationConf)
 		
-		this.wiggle = new Tween({z:-2}, {z:2}, {
-			duration:0.75,
+		this.wiggle = new Tween({z:-0.1}, {z:0.1}, {
+			duration:0.5,
 			autoStart: true,
 			loop:true,
 			pingpong:true, 
 			ease:'EaseInOutQuad',
-			onUpdate: rotation => this.rotation.z = rotation.z * Math.PI / 180
+			onUpdate: rotation => {
+				this.mesh.geometry.applyMatrix(new Matrix4().makeRotationZ(rotation.z * Math.PI / 180))
+			}
 		})
 	}
 
 	update(delta,elapsed){
 		this.wiggle.update()
-		this.brake.update()
-		this.boost.update()
+		
+		if(this.position.x !== this.target.x || this.position.y !== this.target.y ){
+			let dx = this.position.x - this.target.x
+			let dy = this.position.y - this.target.y
 
-		if(this.controls.TRIGGER_L && !this.isAnimated) {
-			this.brake.start()
-		}
+			this.position.x = Math.abs(dx) > 0.005 ? this.position.x - dx / 30 : this.target.x 
+			this.position.y = Math.abs(dy) > 0.005 ? this.position.y - dy / 30 : this.target.y
+		} 
 
-		if(this.controls.TRIGGER_R && !this.isAnimated) {
-			this.boost.start()
-		}
 	}
 }

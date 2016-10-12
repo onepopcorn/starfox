@@ -55,6 +55,6 @@ export default class SceneLoader {
 
 	progress(id,progress) {
 		
-		console.log(id,progress.loaded * 100 / progress.total)
+		// console.log(id,progress.loaded * 100 / progress.total)
 	}
 }

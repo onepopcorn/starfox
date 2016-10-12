@@ -1,15 +1,18 @@
 import GameObject from '../Engine/Display/GameObject'
-import { BoxGeometry, MeshPhongMaterial } from 'three'
+import { BoxGeometry, MeshLambertMaterial, Mesh } from 'three'
 
 export default class Ground extends GameObject {
 	constructor(){
 		super();
 		
-		this.geometry = new BoxGeometry(20,0.01,150);
-		this.material = new MeshPhongMaterial({color:0x00ff00});
-		this.material.needsUpdate = true;
+		let geometry = new BoxGeometry(20,0.01,150);
+		let material = new MeshLambertMaterial({color:0x00ff00});
+		material.needsUpdate = true;
+		let mesh = new Mesh(geometry,material)
+		this.add(mesh)
 
-		this.position.y = -3;
+		mesh.receiveShadow = true
+		this.position.y = -2.5;
 	}
 
 	update(){
