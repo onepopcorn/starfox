@@ -60,11 +60,6 @@ export default class GameEngine {
 		this.sceneManager = new SceneManager(this)
 		this.sceneManager.loadScene(initialScene)
 
-		// this.currentScene = new initialScene({
-		// 	controls:this.controls
-		// })
-		// this.currentScene.preload(this.currentScene.init)
-
 		// Handle resize
 		window.onresize = this.onresize.bind(this)
 
@@ -74,10 +69,6 @@ export default class GameEngine {
 		raf(this.render)
 	}
 
-	// changeScene(newScene){
-	// 	this.currentScene = newScene
-	// }
-
 	render(delta){
 		const d = this.clock.getDelta()
 		const e = this.clock.getElapsedTime()
@@ -85,6 +76,8 @@ export default class GameEngine {
 		if(this.currentScene){
 			this.currentScene.update(d,e)
 		}
+		
+		this.controls.update()
 
 		this.renderer.render(this.currentScene,this.camera)
 		raf(this.render)

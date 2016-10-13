@@ -35,36 +35,43 @@ export default class GameScene extends BaseScene {
 		this.add(ground)
 
 		this.reticle = new Reticle(this.controls)
+		this.reticle.position.z = -15
 		this.add(this.reticle)
 
 		this.ship = new Ship(this.assets.ship,this.reticle.position,this.controls)
+		this.ship.position.z = -5
 		this.add(this.ship)
 
+		// Flag to prevent easing swap
+		this.moving = false
+
 		const animationConf = {
-			duration:0.5,
+			duration:1,
 			pingpong:true,
 			loop:true,
 			loopCount:2,
 			ease:'EaseOutQuad',
+			onStart:() => this.moving = true,
 			onUpdate: position => {
 				const diff = this.ship.position.z - this.reticle.position.z
 				this.ship.position.z = position.z		
 				this.reticle.position.z = position.z - diff
-			}
+			},
+			onFinish:() => this.moving = false
 		}
 
-		this.brake = new Tween({z:1.5}, {z:2.5}, animationConf)
-		this.boost = new Tween({z:1.5}, {z:-0.5}, animationConf)
+		this.brake = new Tween({z:this.ship.position.z}, {z:this.ship.position.z + 3}, animationConf)
+		this.boost = new Tween({z:this.ship.position.z}, {z:this.ship.position.z - 10}, animationConf)
 
 	}
 
 	update(delta,elapsed){
 		super.update(delta,elapsed)
-		if(this.controls.TRIGGER_L){
+		if(this.controls.TRIGGER_L && !this.moving){
 			this.brake.start()
 		}
 
-		if(this.controls.TRIGGER_R){
+		if(this.controls.TRIGGER_R && !this.moving){
 			this.boost.start()
 		}
 

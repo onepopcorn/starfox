@@ -13,10 +13,9 @@ export default class Ship extends GameObject {
 		
 		// // Flip Y & Z mesh points to face front & up when lookAt is applied 
 		this.mesh.geometry.applyMatrix(new Matrix4().makeRotationY(Math.PI))
-		this.position.z = 1.5
 		this.isAnimated = false
 		
-		this.wiggle = new Tween({z:-0.1}, {z:0.1}, {
+		this.wiggle = new Tween({z:-0.2,x:-0.07}, {z:0.2,x:0.07}, {
 			duration:0.5,
 			autoStart: true,
 			loop:true,
@@ -24,6 +23,7 @@ export default class Ship extends GameObject {
 			ease:'EaseInOutQuad',
 			onUpdate: rotation => {
 				this.mesh.geometry.applyMatrix(new Matrix4().makeRotationZ(rotation.z * Math.PI / 180))
+				this.mesh.geometry.applyMatrix(new Matrix4().makeRotationX(rotation.x * Math.PI / 180))
 			}
 		})
 	}

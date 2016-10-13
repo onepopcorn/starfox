@@ -17,7 +17,7 @@ export default class Controls {
 
 	init(){
 		switch(this.inputType) {
-			case this.inputType.GAMEPAD:
+			case INPUT_TYPE.GAMEPAD:
 				this.controller = new Gamepad(this.actions)
 				break
 			default:
@@ -37,6 +37,13 @@ export default class Controls {
 	config(action,key){
 		INPUT_ACTION[action] = key
 
+	}
+
+	update(){
+		if(typeof this.controller.update === 'function')
+		{
+			this.controller.update()
+		}
 	}
 
 	resume() {

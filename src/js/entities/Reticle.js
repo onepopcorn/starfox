@@ -11,7 +11,6 @@ export default class Reticle extends GameObject {
 		this.add(mesh)
 
 		this.controls = controls
-		this.position.z = -2
 		this.vel = 0.1
 	}
 
