@@ -6,10 +6,11 @@
  * @todo Game engine must handle postprocessing effects and give access to change effects on runtime
  * @todo Game engine should implement a 3D physics engine (cannonjs maybe?)
  * @todo Game engine should implement an assets preloader per scene
+ * @todo Implement a GUI system. Example: http://codepen.io/waichuen/pen/ojMJKB?editors=0010
  */
 
-import { PerspectiveCamera, WebGLRenderer, Clock } from 'three' 
-import { BaseScene, DefaultScene, SceneManager } from './Scene'
+import { PerspectiveCamera, OrthographicCamera, Scene, WebGLRenderer, Clock } from 'three' 
+import { SceneManager } from './Scene'
 import Controls from './Controls/Controls'
 import raf from 'raf'
 
@@ -41,8 +42,12 @@ export default class GameEngine {
 		)
 		this.camera.position.z = 5
 
+		this.uicamera = new OrthographicCamera(- window.innerWidth/2, window.innerWidth/2, window.innerHeight/2, -window.innerHeight/2, 1, 10)
+		this.uicamera.position.z = 10
+
 		// Config renderer
 		this.renderer = new WebGLRenderer({antialias:this.settings.antialiasing,shadowMapEnabled:this.settings.shadowMap})
+		this.renderer.autoClear = false
 		this.renderer.setSize(window.innerWidth,window.innerHeight)
 		document.querySelector(targetID).appendChild(this.renderer.domElement)
 
@@ -50,15 +55,11 @@ export default class GameEngine {
 		this.controls = new Controls()
 		this.controls.init()
 
-		// Setup scene. 
-		// Ensure scene is BaseScene subclass
-		if(!initialScene instanceof BaseScene){
-			throw(new Error('An initial scene must be provided'))
-		}
-		// Start with a default preload Scene
-		this.currentScene = new DefaultScene()
+		// Handle scenes
+		this.scene3D = new Scene()
+		this.sceneGUI = new Scene()
 		this.sceneManager = new SceneManager(this)
-		this.sceneManager.loadScene(initialScene)
+		this.sceneManager.load(initialScene)
 
 		// Handle resize
 		window.onresize = this.onresize.bind(this)
@@ -66,26 +67,45 @@ export default class GameEngine {
 		// Startup the engine
 		this.render = this.render.bind(this)
 		this.clock = new Clock()
+		
 		raf(this.render)
 	}
 
-	render(delta){
+	render(){
 		const d = this.clock.getDelta()
 		const e = this.clock.getElapsedTime()
-
-		if(this.currentScene){
-			this.currentScene.update(d,e)
-		}
 		
+		// Update controls
 		this.controls.update()
 
-		this.renderer.render(this.currentScene,this.camera)
+		// Update scenes
+		if(this.currentScene && this.currentScene._active) {
+			this.currentScene.update()
+		}
+		
+		// Render both UI and 3D scenes
+		this.renderer.clear()
+		this.renderer.render(this.scene3D,this.camera)
+		this.renderer.clearDepth()
+		this.renderer.render(this.sceneGUI,this.uicamera)
+
+		if(this.currentScene)
+			console.log(this.currentScene.name)
+		
 		raf(this.render)
 	}
 
 	onresize(){
 		this.camera.aspect = this.settings.aspect = window.innerWidth/window.innerHeight
 		this.camera.updateProjectionMatrix()
+		
+
+		this.uicamera.left = -window.innerWidth/2
+		this.uicamera.right = window.innerWidth/2
+		this.uicamera.top = window.innerHeight/2
+		this.uicamera.bottom = -window.innerHeight/2
+		this.uicamera.updateProjectionMatrix()
+
 		this.renderer.setSize(window.innerWidth,window.innerHeight)
 	}
 }

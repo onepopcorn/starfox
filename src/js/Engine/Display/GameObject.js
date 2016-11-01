@@ -9,6 +9,13 @@ export default class GameObject extends Object3D {
 		if(this.constructor === GameObject){
 			throw(new Error('Do not instantiate a GameObject directly. Use it to extend your game classes'));
 		}
+
+		Object.defineProperty(this,'type',{
+			enumerable:false,
+			configurable:false,
+			writable:false,
+			value:'GameObject'
+		})
 	}
 	/**
 	 * This method must be overriden by a subclass

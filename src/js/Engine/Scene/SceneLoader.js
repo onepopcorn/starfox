@@ -12,7 +12,8 @@ import { TextureLoader, JSONLoader } from 'three'
 
 const ASSET_TYPE = {
 	JSON: 'json',
-	TEXTURE: 'texture'
+	TEXTURE: 'texture',
+	IMAGE: 'image'
 } 
 
 export default class SceneLoader {
@@ -31,7 +32,7 @@ export default class SceneLoader {
 						let loader = new JSONLoader() 
 						loader.load(asset.url, 
 							(geom,mat) => {resolve({id:asset.id,data:[geom,mat]})}, 
-							progress => this.progress(asset.id,progress),
+							progress => this.progress(asset,progress),
 							error => reject(error)
 						)
 					})
@@ -41,9 +42,17 @@ export default class SceneLoader {
 						let loader = new TextureLoader()
 						loader.load(asset.url,
 							texture => resolve({id:asset.id,data:texture}),
-							progress => this.progress(asset.id,progress),
+							progress => this.progress(asset,progress),
 							error => reject(error)
 						)
+					})
+					break
+				case ASSET_TYPE.IMAGE:
+					current = new Promise((resolve,reject) =>{
+						let loader = document.createElement('img')
+						loader.onload = () => resolve({id:asset.id,data:loader.src})
+						loader.onerror = () => reject()
+						loader.src = asset.url
 					})
 					break
 			}
@@ -54,7 +63,6 @@ export default class SceneLoader {
 	}
 
 	progress(id,progress) {
-		
-		// console.log(id,progress.loaded * 100 / progress.total)
+		this.progressCallback(id,progress)
 	}
 }

@@ -15,7 +15,9 @@ const gulp         = require('gulp'),
       rename       = require('gulp-rename'),
       sourcemaps   = require('gulp-sourcemaps'),
       source       = require('vinyl-source-stream'),
-      esdoc        = require('gulp-esdoc');
+      minify       = require('gulp-minify'),
+      uglifyify    = require('uglifyify'),
+      esdoc        = require('gulp-esdoc')
 
 
 var config = {
@@ -32,7 +34,7 @@ var config = {
   },
   css: {
     src:"src/scss/style.scss",
-    watch:"src/scss/**/*",
+    watch:"src/scss/**/*.scss",
     outputDir:"bin"
   },
   assets: {
@@ -80,14 +82,38 @@ function bundle(bundler){
     .on('end',() => server.reload(config.js.outputFile))
 }
 
-gulp.task('js', () => {
-  var bundler = browserify(config.js.src,watchify.args)
-    .plugin(watchify, {ignoreWatch:['**/node_modules/**']})
-    .transform(babelify, {presets:['es2015']});
+function bundleMin(bundler){
+  bundler
+    .bundle()
+    .on('error',errorReport)
+    .pipe(source(config.js.src))
+    .pipe(buffer())
+    .pipe(rename(config.js.outputFile))
+    .pipe(minify({noSource:true,ext:{min:'.js'}}))
+    .pipe(gulp.dest(config.js.outputDir))
+} 
 
+gulp.task('js', () => {
+  var bundler = browserify(config.js.src,Object.assign({},watchify.args,{debug:false}))
+    .plugin(watchify, {ignoreWatch:['**/node_modules/**']})
+    .transform(babelify, {presets:['es2015']})
     bundle(bundler);
 
     bundler.on('update', () => bundle(bundler));
+})
+
+gulp.task('js-min', () => {
+  var bundler = browserify(config.js.src,{debug:false})
+    .transform(babelify, {presets:['es2015']})
+    .transform(uglifyify,{global:true,compress:{
+      sequences:true,
+      properties:true,
+      dead_code:true,
+      drop_debugger:true,
+      drop_console:true
+    }})
+
+    bundleMin(bundler);
 })
 
 
@@ -131,4 +157,5 @@ gulp.task('server', () => {
 });
 
 gulp.task('compile',['html','assets','js','styles']);
+gulp.task('production',['html','assets','styles','js-min']);
 gulp.task('default',['compile','server','watch']);

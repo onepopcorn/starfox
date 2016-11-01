@@ -4,22 +4,22 @@ import Ship from '../entities/Ship'
 import Ground from '../entities/Ground'
 import Reticle from '../entities/Reticle'
 
-import SceneLoader from '../Engine/Scene/SceneLoader'
 import Tween from '../Engine/Ease/Tween'
 
 export default class GameScene extends BaseScene {
 	constructor(engine){
 		super()
 
-		this.assets = {}
+		this.name = "Game"
 		this.controls = engine.controls.actions
 		this.fog = new FogExp2()
 	}
 
-	preload() {
+	getAssets() {
 		return [
-			{id:'ship',type:"json",url:'./assets/models/arwing.json'},
-			{id:'spaceBg',type:"texture",url:'./assets/textures/galaxy_background.png'}
+			{id:'ship',type:'json',url:'./assets/models/arwing.json'},
+			{id:'spaceBg',type:"texture",url:'./assets/textures/galaxy_background.png'},
+			{id:'crosshair',type:'texture',url:'/assets/textures/crosshair.png'}
 		]
 	}
 
@@ -34,7 +34,7 @@ export default class GameScene extends BaseScene {
 		let ground = new Ground(this.assets.spaceBg)
 		this.add(ground)
 
-		this.reticle = new Reticle(this.controls)
+		this.reticle = new Reticle(this.assets.crosshair,this.controls)
 		this.reticle.position.z = -15
 		this.add(this.reticle)
 
@@ -63,6 +63,8 @@ export default class GameScene extends BaseScene {
 		this.brake = new Tween({z:this.ship.position.z}, {z:this.ship.position.z + 3}, animationConf)
 		this.boost = new Tween({z:this.ship.position.z}, {z:this.ship.position.z - 10}, animationConf)
 
+		// Call it at the END of init function to be sure everything is loaded and settled
+		super.init()
 	}
 
 	update(delta,elapsed){
@@ -74,9 +76,12 @@ export default class GameScene extends BaseScene {
 		if(this.controls.TRIGGER_R && !this.moving){
 			this.boost.start()
 		}
-
 		this.brake.update()
 		this.boost.update()
 		this.ship.lookAt(this.reticle.position)	
+	}
+
+	destroy(){
+		super.destroy()
 	}
 }

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "rm -rf bin && gulp",
+    "production": "rm -rf bin && gulp production",
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "rm -rf docs && gulp docs"
   },
@@ -24,12 +25,13 @@
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^3.1.0",
     "gulp-esdoc": "^0.3.0",
+    "gulp-minify": "0.0.14",
     "gulp-rename": "^1.2.2",
     "gulp-ruby-sass": "^2.0.6",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-util": "^3.0.7",
     "node-notifier": "^4.6.1",
-    "uglifyify": "^3.0.1",
+    "uglifyify": "^3.0.4",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.7.0"
@@ -38,17 +40,5 @@
     "raf": "^3.2.0",
     "three": "^0.81.2",
     "three-effectcomposer": "0.0.1"
-  },
-  "browserify": {
-    "transform": [
-      [
-        "babelify",
-        {
-          "presets": [
-            "es2015"
-          ]
-        }
-      ]
-    ]
   }
 }

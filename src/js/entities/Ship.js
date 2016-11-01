@@ -4,7 +4,7 @@ import Tween from '../Engine/Ease/Tween'
 
 export default class Ship extends GameObject {
 	constructor([geometry,materials],targetPosition,controls){
-		super();
+		super()
 		// Assign properties
 		this.controls = controls
 		this.target = targetPosition
@@ -39,5 +39,14 @@ export default class Ship extends GameObject {
 			this.position.y = Math.abs(dy) > 0.005 ? this.position.y - dy / 30 : this.target.y
 		} 
 
+	}
+
+	destroy(){
+		this.controls = null
+		this.target = null
+		this.mesh.geometry.dipsose()
+		this.mesh.material.dispose()
+		this.mesh = null
+		this.wiggle = null
 	}
 }

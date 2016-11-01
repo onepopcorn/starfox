@@ -2,11 +2,11 @@ import { PlaneGeometry, MeshBasicMaterial, Mesh } from 'three'
 import GameObject from '../Engine/Display/GameObject'
 
 export default class Reticle extends GameObject {
-	constructor(controls){
+	constructor(texture,controls){
 		super()
 
 		let geometry = new PlaneGeometry(0.75,0.75)
-		let material = new MeshBasicMaterial({color:0xffffff,wireframe:true})
+		let material = new MeshBasicMaterial({map:texture,transparent:true})
 		let mesh = new Mesh(geometry,material)
 		this.add(mesh)
 
