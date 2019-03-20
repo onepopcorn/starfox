@@ -9,8 +9,8 @@ export default class UISpiner extends GUIObject {
 		this.image.src = imgPath
 			
 		this.canvas = document.createElement('canvas')
-		this.canvas.width = '256' 
-		this.canvas.height = '64'
+		this.canvas.width = '782' 
+		this.canvas.height = '23'
 		
 		this.ctx = this.canvas.getContext('2d')
 		this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height)
@@ -22,13 +22,12 @@ export default class UISpiner extends GUIObject {
 	}
 
 	progress(percent) {
-		let topMargin = 7
-		let leftMargin = 5
-		let rightMargin = 10
-		let bottomMargin = 15
 
-		this.ctx.clearRect(leftMargin,topMargin,this.canvas.width-rightMargin,this.canvas.height - bottomMargin)
-		this.ctx.drawImage(this.image,leftMargin,topMargin,percent,this.image.height - bottomMargin,leftMargin,topMargin,percent,this.image.height - bottomMargin)
+		let width = this.canvas.width * percent / 100
+
+		this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height)
+		// this.ctx.drawImage(this.image,0,0,percent,this.image.height,0,0,percent,this.image.height)
+		this.ctx.drawImage(this.image,0,0,width,this.image.height)
 		this.setTexture(this.texture)
 	}
 

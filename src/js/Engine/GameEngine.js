@@ -88,9 +88,6 @@ export default class GameEngine {
 		this.renderer.render(this.scene3D,this.camera)
 		this.renderer.clearDepth()
 		this.renderer.render(this.sceneGUI,this.uicamera)
-
-		if(this.currentScene)
-			console.log(this.currentScene.name)
 		
 		raf(this.render)
 	}

@@ -14,7 +14,7 @@ export default class IntroScene extends BaseScene {
 	getAssets(){
 		return [
 			{id:'icon',type:'texture',url:'./assets/textures/icon.png'},
-			{id:'meter',type:'image',url:'./assets/textures/meter.png'}
+			{id:'meter',type:'image',url:'./assets/textures/line.png'}
 		]
 	}
 
@@ -28,9 +28,7 @@ export default class IntroScene extends BaseScene {
 	}
 
 	onLoaded(){
-		setTimeout(()=>{
-			this.engine.sceneManager.swap()
-		}, 5000)
+		this.engine.sceneManager.swap()
 	}
 
 	update(){

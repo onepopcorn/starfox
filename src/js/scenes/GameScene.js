@@ -1,10 +1,12 @@
 import { Scene, JSONLoader, AmbientLight, PointLight, TextureLoader, FogExp2 } from 'three'
 import { BaseScene } from '../Engine/Scene'
 import Ship from '../entities/Ship'
-import Ground from '../entities/Ground'
+// import Ground from '../entities/Ground'
+import Ground from '../entities/Background'
 import Reticle from '../entities/Reticle'
 
 import Tween from '../Engine/Ease/Tween'
+import Background from '../entities/Background';
 
 export default class GameScene extends BaseScene {
 	constructor(engine){
@@ -31,8 +33,12 @@ export default class GameScene extends BaseScene {
 		let amb = new AmbientLight(0xffffff,0.5)
 		this.add(amb)
 
-		let ground = new Ground(this.assets.spaceBg)
-		this.add(ground)
+		// let ground = new Ground(this.assets.spaceBg)
+		// this.add(ground)
+
+		let bg = new Background(this.assets.spaceBg)
+		bg.position.z = -50;
+		this.add(bg)
 
 		this.reticle = new Reticle(this.assets.crosshair,this.controls)
 		this.reticle.position.z = -15
